@@ -1,26 +1,55 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useCallback, useEffect } from "react";
+import { Observer } from "mobx-react-lite";
+import { useHistory } from "react-router";
+import { useAPI, useUserProfile } from "@core/hooks";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+import { Routes } from "@routes";
 
-export default App;
+import { Suspense } from "@components/ordinary/Suspense";
+
+import { authService } from "@core/services";
+import { routesConfig } from "@core/config";
+
+const App = () => {
+	const userProfile = useUserProfile();
+	const history = useHistory();
+	const profileInfo = useAPI({
+		service: authService.profileInfo,
+		isPendingAfterMount: true,
+		isRedirectOnAuthPageIfNotAuthorized: false,
+		ignoreHTTPErrors: true,
+	});
+
+	const getProfileInfo = useCallback(async () => {
+		try {
+			const profileInfoResponse = await profileInfo.call();
+
+			if (profileInfoResponse) {
+				userProfile.setInfo(profileInfoResponse);
+			}
+		} catch (error) {
+			console.error(error);
+		}
+
+		if (userProfile.isAuthorized() === false) {
+			history.push(routesConfig.authBrowserRoutes.auth());
+		}
+	}, [history, profileInfo]);
+
+	useEffect(() => {
+		getProfileInfo();
+	}, [getProfileInfo]);
+
+	return (
+		<Observer>
+			{() => (
+				<Suspense isWaiting={profileInfo.isPending()}>
+					<Routes />
+				</Suspense>
+			)}
+		</Observer>
+	);
+};
+
+export { App };
