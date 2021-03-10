@@ -4,7 +4,7 @@ import { App } from "./app";
 import { BrowserRouter } from "react-router-dom";
 import { StoreProvider } from "@core/store";
 import { ThemeProvider } from "styled-components";
-import { BodyStyles, FontStyles } from "@styles";
+import { CommonStyles } from "@styles";
 import { theme } from "@core/theme";
 
 import reportWebVitals from "./reportWebVitals";
@@ -15,8 +15,7 @@ ReactDOM.render(
 	<React.StrictMode>
 		<StoreProvider>
 			<ThemeProvider theme={theme}>
-				<BodyStyles />
-				<FontStyles />
+				<CommonStyles />
 				<BrowserRouter>
 					<App />
 				</BrowserRouter>

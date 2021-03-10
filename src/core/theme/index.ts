@@ -2,9 +2,12 @@ import { transparentize } from "polished";
 import { DefaultTheme } from "styled-components";
 
 export const theme: DefaultTheme = {
+	fonts: {
+		primary: "Montserrat",
+	},
 	colors: {
 		background: {
-			primary: "#F3F5F9",
+			primary: "#ffffff",
 			secondary: "#fdfdfd",
 		},
 		common: {
@@ -15,6 +18,7 @@ export const theme: DefaultTheme = {
 			red: "#f73d34",
 			orange: "#fdb549",
 			yellow: "#ffe243",
+			pink: "#FF9CAA",
 			white: "white",
 		},
 		complex: {
